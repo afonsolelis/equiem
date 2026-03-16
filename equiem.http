@@ -1,0 +1,518 @@
+@base = https://equiem.onrender.com/api/v1
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CUSTOMER
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Customer válido
+POST {{base}}/customers
+Content-Type: application/json
+
+{
+  "name": "Acme Corp",
+  "region": "APAC",
+  "status": "active"
+}
+
+### Customer — name ausente
+POST {{base}}/customers
+Content-Type: application/json
+
+{
+  "region": "APAC",
+  "status": "active"
+}
+
+### Customer — status enum inválido
+POST {{base}}/customers
+Content-Type: application/json
+
+{
+  "name": "Acme Corp",
+  "region": "APAC",
+  "status": "unknown"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SITE
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Site válido
+POST {{base}}/sites
+Content-Type: application/json
+
+{
+  "name": "HQ",
+  "address": "100 Collins St, Melbourne",
+  "timezone": "Australia/Melbourne",
+  "siteType": "commercial",
+  "customerId": "cust-uuid-001"
+}
+
+### Site — siteType enum inválido
+POST {{base}}/sites
+Content-Type: application/json
+
+{
+  "name": "HQ",
+  "address": "100 Collins St",
+  "timezone": "Australia/Melbourne",
+  "siteType": "office",
+  "customerId": "cust-uuid-001"
+}
+
+### Site — customerId ausente
+POST {{base}}/sites
+Content-Type: application/json
+
+{
+  "name": "HQ",
+  "address": "100 Collins St",
+  "timezone": "Australia/Melbourne",
+  "siteType": "mixed"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# BUILDING
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Building válido
+POST {{base}}/buildings
+Content-Type: application/json
+
+{
+  "name": "Tower A",
+  "displayOrder": 1,
+  "siteId": "site-uuid-001"
+}
+
+### Building — displayOrder não é número
+POST {{base}}/buildings
+Content-Type: application/json
+
+{
+  "name": "Tower A",
+  "displayOrder": "um",
+  "siteId": "site-uuid-001"
+}
+
+### Building — siteId ausente
+POST {{base}}/buildings
+Content-Type: application/json
+
+{
+  "name": "Tower A",
+  "displayOrder": 1
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# LEVEL
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Level válido
+POST {{base}}/levels
+Content-Type: application/json
+
+{
+  "name": "Level 10",
+  "displayOrder": 10,
+  "spaceCount": 5,
+  "buildingId": "bldg-uuid-001"
+}
+
+### Level — spaceCount ausente
+POST {{base}}/levels
+Content-Type: application/json
+
+{
+  "name": "Level 10",
+  "displayOrder": 10,
+  "buildingId": "bldg-uuid-001"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SPACE
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Space válido
+POST {{base}}/spaces
+Content-Type: application/json
+
+{
+  "name": "Suite 1001",
+  "ownershipType": "leased",
+  "levelId": "lvl-uuid-001"
+}
+
+### Space — ownershipType enum inválido
+POST {{base}}/spaces
+Content-Type: application/json
+
+{
+  "name": "Suite 1001",
+  "ownershipType": "rented",
+  "levelId": "lvl-uuid-001"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# COMPANY
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Company válida (completo)
+POST {{base}}/companies
+Content-Type: application/json
+
+{
+  "name": "Acme Pty Ltd",
+  "industry": "Technology",
+  "attributes": ["premium", "enterprise"],
+  "approvedDomains": ["acme.com", "acme.com.au"],
+  "userApproval": "automatic"
+}
+
+### Company — sem campos opcionais
+POST {{base}}/companies
+Content-Type: application/json
+
+{
+  "name": "Acme Pty Ltd",
+  "industry": "Technology",
+  "userApproval": "manual"
+}
+
+### Company — attributes com não-strings
+POST {{base}}/companies
+Content-Type: application/json
+
+{
+  "name": "Acme Pty Ltd",
+  "industry": "Technology",
+  "attributes": [1, 2, 3],
+  "userApproval": "automatic"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# APARTMENT
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Apartment válido
+POST {{base}}/apartments
+Content-Type: application/json
+
+{
+  "name": "Apt 42B"
+}
+
+### Apartment — name ausente
+POST {{base}}/apartments
+Content-Type: application/json
+
+{}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# BOOKABLE RESOURCE
+# ─────────────────────────────────────────────────────────────────────────────
+
+### BookableResource válido (completo)
+POST {{base}}/bookable-resources
+Content-Type: application/json
+
+{
+  "name": "Board Room 1",
+  "description": "Main boardroom on level 12",
+  "capacity": 12,
+  "location": "Level 12",
+  "status": "active",
+  "photos": ["https://cdn.equiem.com/room1.jpg"],
+  "buildingId": "bldg-uuid-001"
+}
+
+### BookableResource — sem campos opcionais
+POST {{base}}/bookable-resources
+Content-Type: application/json
+
+{
+  "name": "Board Room 1",
+  "capacity": 12,
+  "location": "Level 12",
+  "status": "active",
+  "buildingId": "bldg-uuid-001"
+}
+
+### BookableResource — capacity não é número
+POST {{base}}/bookable-resources
+Content-Type: application/json
+
+{
+  "name": "Board Room 1",
+  "capacity": "many",
+  "location": "Level 12",
+  "status": "active",
+  "buildingId": "bldg-uuid-001"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# BOOKING
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Booking válida
+POST {{base}}/bookings
+Content-Type: application/json
+
+{
+  "startTime": "2026-03-16T09:00:00Z",
+  "endTime": "2026-03-16T10:00:00Z",
+  "status": "pending",
+  "notes": "Quarterly review",
+  "userId": "user-uuid-001",
+  "bookableResourceId": "res-uuid-001"
+}
+
+### Booking — startTime data inválida
+POST {{base}}/bookings
+Content-Type: application/json
+
+{
+  "startTime": "nao-e-data",
+  "endTime": "2026-03-16T10:00:00Z",
+  "status": "pending",
+  "userId": "user-uuid-001",
+  "bookableResourceId": "res-uuid-001"
+}
+
+### Booking — status enum inválido
+POST {{base}}/bookings
+Content-Type: application/json
+
+{
+  "startTime": "2026-03-16T09:00:00Z",
+  "endTime": "2026-03-16T10:00:00Z",
+  "status": "hold",
+  "userId": "user-uuid-001",
+  "bookableResourceId": "res-uuid-001"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# USER
+# ─────────────────────────────────────────────────────────────────────────────
+
+### User válido — commercial
+POST {{base}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "email": "jane.doe@acme.com",
+  "emailVerified": true,
+  "mobileNumber": "+61400000000",
+  "status": "active",
+  "userType": "commercial",
+  "uuid": "user-uuid-001",
+  "auth0Id": "auth0|abc123",
+  "memberSince": "2025-01-01T00:00:00Z"
+}
+
+### User válido — residential
+POST {{base}}/users
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "email": "john@residential.com",
+  "emailVerified": false,
+  "status": "active",
+  "userType": "residential",
+  "uuid": "user-uuid-002",
+  "auth0Id": "auth0|def456",
+  "memberSince": "2025-03-01T00:00:00Z"
+}
+
+### User válido — visitor
+POST {{base}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Bob",
+  "lastName": "Visitor",
+  "email": "bob@visitor.com",
+  "emailVerified": false,
+  "status": "pending",
+  "userType": "visitor",
+  "uuid": "user-uuid-003",
+  "auth0Id": "auth0|ghi789",
+  "memberSince": "2026-03-16T00:00:00Z"
+}
+
+### User — emailVerified não-boolean
+POST {{base}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "email": "jane@acme.com",
+  "emailVerified": "sim",
+  "status": "active",
+  "userType": "commercial",
+  "uuid": "user-uuid-001",
+  "auth0Id": "auth0|abc123",
+  "memberSince": "2025-01-01T00:00:00Z"
+}
+
+### User — memberSince data inválida
+POST {{base}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "email": "jane@acme.com",
+  "emailVerified": true,
+  "status": "active",
+  "userType": "commercial",
+  "uuid": "user-uuid-001",
+  "auth0Id": "auth0|abc123",
+  "memberSince": "ontem"
+}
+
+### User — userType enum inválido
+POST {{base}}/users
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Doe",
+  "email": "jane@acme.com",
+  "emailVerified": true,
+  "status": "active",
+  "userType": "admin",
+  "uuid": "user-uuid-001",
+  "auth0Id": "auth0|abc123",
+  "memberSince": "2025-01-01T00:00:00Z"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SITE PROFILE
+# ─────────────────────────────────────────────────────────────────────────────
+
+### SiteProfile válido
+POST {{base}}/site-profiles
+Content-Type: application/json
+
+{
+  "status": "active",
+  "joinedAt": "2025-06-01T00:00:00Z",
+  "isActive": true,
+  "userId": "user-uuid-001",
+  "siteId": "site-uuid-001"
+}
+
+### SiteProfile válido — com companyId opcional
+POST {{base}}/site-profiles
+Content-Type: application/json
+
+{
+  "status": "active",
+  "joinedAt": "2025-06-01T00:00:00Z",
+  "isActive": true,
+  "userId": "user-uuid-001",
+  "siteId": "site-uuid-001",
+  "companyId": "comp-uuid-001"
+}
+
+### SiteProfile — isActive não-boolean
+POST {{base}}/site-profiles
+Content-Type: application/json
+
+{
+  "status": "active",
+  "joinedAt": "2025-06-01T00:00:00Z",
+  "isActive": 1,
+  "userId": "user-uuid-001",
+  "siteId": "site-uuid-001"
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# ROLE
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Role válida — site scope
+POST {{base}}/roles
+Content-Type: application/json
+
+{
+  "name": "Property Manager",
+  "description": "Manages site operations",
+  "scopeLevel": "site",
+  "permissions": ["read:users", "write:content", "manage:events"]
+}
+
+### Role válida — building scope
+POST {{base}}/roles
+Content-Type: application/json
+
+{
+  "name": "Bookings Manager",
+  "scopeLevel": "building",
+  "permissions": ["manage:bookings", "approve:bookings"]
+}
+
+### Role — scopeLevel enum inválido
+POST {{base}}/roles
+Content-Type: application/json
+
+{
+  "name": "Admin",
+  "scopeLevel": "global",
+  "permissions": ["read:all"]
+}
+
+### Role — permissions com não-strings
+POST {{base}}/roles
+Content-Type: application/json
+
+{
+  "name": "PM",
+  "scopeLevel": "site",
+  "permissions": [1, 2]
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GROUP
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Group válido
+POST {{base}}/groups
+Content-Type: application/json
+
+{
+  "name": "VIP Members"
+}
+
+### Group — name ausente
+POST {{base}}/groups
+Content-Type: application/json
+
+{}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# INTEREST
+# ─────────────────────────────────────────────────────────────────────────────
+
+### Interest válido
+POST {{base}}/interests
+Content-Type: application/json
+
+{
+  "name": "Wellness"
+}
+
+### Interest — name tipo errado
+POST {{base}}/interests
+Content-Type: application/json
+
+{
+  "name": true
+}
